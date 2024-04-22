@@ -17,88 +17,63 @@ import { App as AntdApp } from "antd";
 
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout";
+import { resources } from "./config/resources";
 
 
 
 
-const App = () => {
+function App() {
   return (
     <BrowserRouter>
-      <ConfigProvider theme={RefineThemes.Blue}>
-        <AntdApp>
-          <DevtoolsProvider>
-            <Refine
-              routerProvider={routerProvider}
-              dataProvider={dataProvider}
-              liveProvider={liveProvider}
-              notificationProvider={useNotificationProvider}
-              authProvider={authProvider}
-              resources={resources}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                liveMode: "auto",
-                useNewQueryKeys: true,
-              }}
-            >
-              <Routes>
-                <Route
-                  element={
-                    <Authenticated
+      <GitHubBanner />
+      <RefineKbarProvider>
+       
+          <AntdApp>
+            <DevtoolsProvider>
+              <Refine
+                dataProvider={dataProvider}
+                liveProvider={liveProvider}
+                notificationProvider={useNotificationProvider}
+                routerProvider={routerBindings}
+                authProvider={authProvider}
+                resources={resources}
+                options={{
+                  syncWithLocation: true,
+                  warnWhenUnsavedChanges: true,
+                  useNewQueryKeys: true,
+                  projectId: "3UqqST-eyIUYY-0Az4Gf",
+                  liveMode: "auto",
+                }}
+              >
+                <Routes>
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route
+                    element={
+                    <Authenticated 
                       key="authenticated-layout"
-                      fallback={<CatchAllNavigate to="/login" />}
+                      fallback={<CatchAllNavigate to="/login"/>}
                     >
                       <Layout>
                         <Outlet />
-                      </Layout>
+                      </Layout> 
                     </Authenticated>
-                  }
-                >
-                  <Route index element={<DashboardPage />} />
-
-                  <Route
-                    path="/tasks"
-                    element={
-                      <TasksListPage>
-                        <Outlet />
-                      </TasksListPage>
-                    }
-                  >
-                    <Route path="new" element={<TasksCreatePage />} />
-                    <Route path="edit/:id" element={<TasksEditPage />} />
+                    }>
+                      <Route index element={<Home />} />
                   </Route>
-
-                  <Route path="/companies">
-                    <Route index element={<ClientListPage />} />
-                    <Route path="new" element={<ClientCreatePage />} />
-                    <Route path="edit/:id" element={<ClientEditPage />} />
-                  </Route>
-
-                  <Route path="*" element={<ErrorComponent />} />
-                </Route>
-
-                <Route
-                  element={
-                    <Authenticated
-                      key="authenticated-auth"
-                      fallback={<Outlet />}
-                    >
-                      <NavigateToResource resource="dashboard" />
-                    </Authenticated>
-                  }
-                >
-                  <Route path="/login" element={<LoginPage />} />
-                </Route>
-              </Routes>
-              <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
-            </Refine>
-            <DevtoolsPanel />
-          </DevtoolsProvider>
-        </AntdApp>
-      </ConfigProvider>
+                </Routes>
+                <RefineKbar />
+                <UnsavedChangesNotifier />
+                <DocumentTitleHandler />
+              </Refine>
+              <DevtoolsPanel />
+            </DevtoolsProvider>
+          </AntdApp>
+        
+      </RefineKbarProvider>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
